@@ -22,7 +22,7 @@ function App() {
     const handlePost = async () => {
         try {
             console.log('Sending POST request with inputValue:', inputValue); // Log before sending
-            const response = await fetch('https://animated-choux-c90517.netlify.app/.netlify/functions/api/hantarKipas', {
+            const response = await fetch('https://6686845a378d14d5f751996d--testiotapi.netlify.app/.netlify/functions/api/hantarKipas', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

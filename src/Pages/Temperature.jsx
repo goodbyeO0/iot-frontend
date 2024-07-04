@@ -1,36 +1,49 @@
-
+import { useState, useEffect } from "react";
+import { FaTemperatureHigh } from "react-icons/fa";
+import { useNavigate } from "react-router-dom"
 
 function Temperature() {
+    const [data, setData] = useState(null);
+    const navigate = useNavigate()
+    const fetchData = async () => {
+        try {
+            const response = await fetch('https://6686845a378d14d5f751996d--testiotapi.netlify.app/.netlify/functions/api/getSuhu');
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            setData(data);
+            console.log(data)
+        } catch (error) {
+            console.error('Failed to fetch:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+        const intervalId = setInterval(fetchData, 2000);
+
+        return () => clearInterval(intervalId);
+    }, []);
+
+    // Determine color based on data.suhu
+    const isHighTemperature = data && data.suhu >= 33;
+    const textColorClass = isHighTemperature ? 'text-red-500' : 'text-orange-500';
+    const bgColorClass = isHighTemperature ? 'bg-red-500' : 'bg-orange-500';
+    const shadowColorClass = isHighTemperature ? 'shadow-red-400' : 'shadow-orange-400';
+    const iconColor = isHighTemperature ? "#EF4444" : "#F97316";
+
     return (
         <>
-            <div className="">
-
-                <div className="flex justify-center m-8">
-                    <button className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
-                        <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                            Purple to blue
-                        </span>
-                    </button>
-                    <button className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
-                        <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                            Cyan to blue
-                        </span>
-                    </button>
-                    <button className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800">
-                        <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                            Green to blue
-                        </span>
-                    </button>
-                    <button className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-500 to-pink-500 group-hover:from-purple-500 group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800">
-                        <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                            Purple to pink
-                        </span>
-                    </button>
-                    <button className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800">
-                        <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                            Pink to orange
-                        </span>
-                    </button>
+            <div className="flex flex-col items-center w-screen h-screen mt-12">
+                <div className={`flex flex-col items-center justify-center w-3/4 gap-10 mx-auto shadow-xl rounded-2xl h-4/6 ${shadowColorClass}`}>
+                    <div className={`text-6xl font-bold ${textColorClass}`}>{data && Math.round(data.suhu)}</div>
+                    <div>
+                        <FaTemperatureHigh size="170px" color={iconColor} />
+                    </div>
+                    <button onClick={() => navigate("/fan")} className={`w-48 p-4 text-xl font-bold text-white ${bgColorClass} border rounded-lg`}>Fan</button>
                 </div>
             </div>
         </>

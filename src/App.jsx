@@ -3,18 +3,23 @@ import Home from './Pages/Home';
 import Temperature from "./Pages/Temperature";
 import HistoryEntry from "./Pages/HistoryEntry";
 import Fan from "./Pages/Fan";
+import UserContextProvider from "./context/UserContextProvider";
+import Navbar from "./Components/Navbar";
 
 function App() {
   return (
     <>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/temperature" element={<Temperature />} />
-          <Route path="/historyEntry" element={<HistoryEntry />} />
-          <Route path="/fan" element={<Fan />} />
-        </Routes>
-      </Router>
+      <UserContextProvider>
+        <Router>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/temperature" element={<Temperature />} />
+            <Route path="/entry" element={<HistoryEntry />} />
+            <Route path="/fan" element={<Fan />} />
+          </Routes>
+        </Router>
+      </UserContextProvider>
     </>
   )
 }
